@@ -1,40 +1,32 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Connect your device</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
- body{font-family:sans-serif;text-align:center;padding:2.2rem}
- h2{margin-top:0}
- a.button{display:inline-block;margin-top:1.2rem;padding:.9rem 1.7rem;
-          background:#4285f4;color:#fff;border-radius:6px;text-decoration:none}
-</style>
+  <meta charset="utf‑8">
+  <title>Opening Companion…</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body{margin:0;display:flex;align-items:center;justify-content:center;
+         min-height:100vh;background:#000;color:#fff;font-family:sans-serif}
+  </style>
+  <script>
+  (function () {
+    const params = new URLSearchParams(location.search);
+    const vc = encodeURIComponent(params.get('vc') || "");
+    const DEEP_LINK = `myapp://qr-login?vc=${vc}`;
+    const PLAY_STORE = 'https://play.google.com/store/apps/details?id=com.cariad.companionapp';
+
+    const fallback = setTimeout(() => {
+      location.replace(PLAY_STORE);
+    }, 1500);     
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) clearTimeout(fallback);
+    });
+
+    location.replace(DEEP_LINK);
+  })();
+  </script>
 </head>
 <body>
-<h2>Opening Companion App…</h2>
-
-<p>If nothing happens you can install it from Play Store:</p>
-<a id="storeBtn" class="button"
-   href="https://play.google.com/store/apps/details?id=com.cariad.companionapp">
-   Get the app
-</a>
-
-<script>
-(function(){
-  const vc = new URLSearchParams(location.search).get('vc');
-  if(!vc){ return; }  
-
-  const pkg   = 'com.cariad.companionapp';
-  const store = 'https://play.google.com/store/apps/details?id=' + pkg;
-  const intent = 'intent://qr-login'
-               + '?vc=' + encodeURIComponent(vc)
-               + '#Intent;scheme=myapp;package=' + pkg
-               + ';S.browser_fallback_url=' + encodeURIComponent(store)
-               + ';end';
-
-  location.replace(intent);
-})();
-</script>
+  <p>Opening Companion App…</p>
 </body>
 </html>
