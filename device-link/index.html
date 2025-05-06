@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Device Login</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body{font-family:sans-serif;text-align:center;padding:2rem}
+  a.button{display:inline-block;margin-top:2rem;padding:.8rem 1.4rem;
+           background:#4285f4;color:#fff;border-radius:4px;text-decoration:none}
+</style>
+</head>
+<body>
+
+<h2>Open with Companion App</h2>
+<p>If nothing happens automatically, install or open the app.</p>
+
+<a class="button"
+   href="https://play.google.com/store/apps/details?id=com.cariad.companionapp">
+  Get the app
+</a>
+
+<script>
+// When the page loads in a browser that *does* have the app,
+// deep‑link anyway so the user skips this screen.
+const params = new URLSearchParams(location.search);
+const vc = params.get("vc");
+if (vc) {
+  location.href = vc;   // send the browser to Keycloak
+}
+</script>
+</body>
+</html>
