@@ -2,32 +2,61 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Device Login</title>
+<title>Connect your device</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-  body{font-family:sans-serif;text-align:center;padding:2rem}
-  a.button{display:inline-block;margin-top:2rem;padding:.8rem 1.4rem;
-           background:#4285f4;color:#fff;border-radius:4px;text-decoration:none}
+  body{font-family:sans-serif;text-align:center;padding:2rem;background:#fafafa}
+  h2{margin-top:0}
+  a.button{display:inline-block;margin:.8rem 0;padding:.9rem 1.6rem;
+           background:#4285f4;color:#fff;border-radius:6px;text-decoration:none}
+  #spinner{margin:2rem auto;border:4px solid #eee;border-top:4px solid #4285f4;
+           border-radius:50%;width:36px;height:36px;animation:spin 1s linear infinite}
+  @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
-<h2>Open with Companion App</h2>
-<p>If nothing happens automatically, install or open the app.</p>
+<h2>Opening Companion App…</h2>
+<div id="spinner"></div>
 
-<a class="button"
-   href="https://play.google.com/store/apps/details?id=com.cariad.companionapp">
-  Get the app
-</a>
+<p id="fallback" style="display:none">
+  Couldn’t open the app automatically.<br>
+  <a id="storeBtn" class="button"
+     href="https://play.google.com/store/apps/details?id=com.cariad.companionapp">
+     Get the app
+  </a><br>
+  or&nbsp;
+  <a id="browserBtn" href="#">continue in browser</a>
+</p>
 
 <script>
-// When the page loads in a browser that *does* have the app,
-// deep‑link anyway so the user skips this screen.
-const params = new URLSearchParams(location.search);
-const vc = params.get("vc");
-if (vc) {
-  location.href = vc;   // send the browser to Keycloak
-}
+(function () {
+  function qs(name){ return new URLSearchParams(location.search).get(name); }
+
+  const vc = qs('vc');
+  const appLink = location.href;
+  const storeUrl =
+    'https://play.google.com/store/apps/details?id=com.cariad.companionapp';
+
+  document.getElementById('browserBtn').href = vc ?? '#';
+
+  if (vc) {
+    let gaveUp = false;
+    const fallbackTimer = setTimeout(() => {
+      gaveUp = true;                       
+      document.getElementById('spinner').style.display = 'none';
+      document.getElementById('fallback').style.display = 'block';
+      location.replace(storeUrl);
+    }, 1000);
+
+    location.href = vc;
+
+    window.addEventListener('pagehide', () => clearTimeout(fallbackTimer));
+  } else {
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('fallback').style.display = 'block';
+  }
+})();
 </script>
 </body>
 </html>
